@@ -41,7 +41,7 @@ jobs:
         run: docker push hepseeba/userproject:v1
 
 
-      - name: Deploy Application on Server
+      - name: Deploy Application to Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -49,27 +49,28 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
 
           script: |
-            echo "Pulling latest Docker image..."
 
-            docker pull hepseeba/userproject:v1
+            echo "Pulling latest Docker image"
 
-
-            echo "Stopping old container..."
-
-            docker stop userproject-container || true
+            sudo docker pull hepseeba/userproject:v1
 
 
-            echo "Removing old container..."
+            echo "Stopping old container"
 
-            docker rm userproject-container || true
+            sudo docker stop userproject-container || true
 
 
-            echo "Starting new container..."
+            echo "Removing old container"
 
-            docker run -d \
+            sudo docker rm userproject-container || true
+
+
+            echo "Starting new container"
+
+            sudo docker run -d \
               --name userproject-container \
               -p 8080:8080 \
               hepseeba/userproject:v1
 
 
-            echo "Deployment Completed"
+            echo "Deployment completed successfully"
